@@ -35,10 +35,11 @@ export const signIn = async (req, res, next) => {
 
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     const { password: hashPassword, ...rest } = validUser._doc;
+    const expiryDate = new Date(Date.now() + 3600000*24); // 1 day
     res
       .cookie("access_token", token, {
         httpOnly: true,
-        expires: 24 * 60 * 60 * 1000, //1d
+        expires: expiryDate,
       })
       .status(201)
       .json(rest);
