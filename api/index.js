@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.routes.js";
 import authRoute from "./routes/auth.routes.js";
 import cors from "cors";
+
 const app = express();
 
 app.listen(3000, () => {
@@ -18,8 +19,9 @@ mongoose
   })
   .catch((error) => console.log("Connection Failed!!", error));
 
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.json({ messaage: "Hola amigo" });
 });

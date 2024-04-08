@@ -35,11 +35,9 @@ export const signIn = async (req, res, next) => {
 
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     const { password: hashPassword, ...rest } = validUser._doc;
-    const expiryDate = new Date(Date.now() + 3600000 * 24); // 1 day
     res
       .cookie("access_token", token, {
         httpOnly: true,
-        expires: expiryDate,
       })
       .status(201)
       .json(rest);
@@ -51,11 +49,13 @@ export const signIn = async (req, res, next) => {
 export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
+
     // we doing this if-else beacuse when signin in with google it only gives email,name,photo but as for our database we need username,email,password so for first sign in -> else works and then when ecerything is created if works
+
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-      const { password: hashPassword, ...rest } = user._doc;
-      const expiryDate = new Date(Date.now() + 3600000 * 24); // 1 day
+      const { password: hashedPassword, ...rest } = user._doc;
+      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
       res
         .cookie("access_token", token, {
           httpOnly: true,
@@ -64,15 +64,14 @@ export const google = async (req, res, next) => {
         .status(200)
         .json(rest);
     } else {
-      const generatePassword =
+      const generatedPassword =
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
-      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
-      const newUserName =
-        req.body.name.split(" ").join("").toLowerCase() +
-        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
       const newUser = new User({
-        username: newUserName,
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.random().toString(36).slice(-8),
         email: req.body.email,
         password: hashedPassword,
         profilePicture: req.body.photo,
@@ -81,12 +80,10 @@ export const google = async (req, res, next) => {
       await newUser.save();
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const { password: hashedPassword2, ...rest } = newUser._doc;
-      const expiryDate = new Date(Date.now() + 3600000 * 24); //1d
 
       res
         .cookie("access_token", token, {
           httpOnly: true,
-          expires: expiryDate,
         })
         .status(200)
         .json(rest);
@@ -97,5 +94,5 @@ export const google = async (req, res, next) => {
 };
 
 export const signOut = async (req, res) => {
-  res.clearCookie("access_token").status(200).json("Successfully Signed Out!!")
+  res.clearCookie("access_token").status(200).json("Successfully Signed Out!!");
 };

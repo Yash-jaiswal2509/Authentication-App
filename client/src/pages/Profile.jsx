@@ -27,6 +27,7 @@ export default function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  
   useEffect(() => {
     if (image) {
       handleFileUpload(image);
