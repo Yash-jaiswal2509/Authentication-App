@@ -8,17 +8,6 @@ import path from "path";
 
 const app = express();
 
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, "/client/dist")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-});
-
-app.listen(3000, () => {
-  console.log("Server listening on port 3000");
-});
-
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -26,8 +15,20 @@ mongoose
   })
   .catch((error) => console.log("Connection Failed!!", error));
 
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
+
 app.use(cookieParser());
 app.use(express.json());
+
+app.listen(3000, () => {
+  console.log("Server listening on port 3000");
+});
 
 app.get("/", (req, res) => {
   res.json({ messaage: "Hola amigo" });
