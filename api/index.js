@@ -5,8 +5,16 @@ import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.routes.js";
 import authRoute from "./routes/auth.routes.js";
 import cors from "cors";
+import path from "path";
 
 const app = express();
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
