@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom"
 import OAuth from "../components/OAuth";
 
 function SignUp() {
-  const apiURL = import.meta.env.VITE_BACKEND_URL;
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,7 +17,7 @@ function SignUp() {
     try {
       setLoading(true);
       setError(false);
-      const res = await fetch(`${apiURL}/api/auth/sign-up`, {
+      const res = await fetch(`/api/auth/sign-up`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

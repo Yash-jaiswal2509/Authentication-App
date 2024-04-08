@@ -4,7 +4,6 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.routes.js";
 import authRoute from "./routes/auth.routes.js";
-import cors from "cors";
 import path from "path";
 
 const app = express();
@@ -33,13 +32,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({ messaage: "Hola amigo" });
 });
-
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  })
-);
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
