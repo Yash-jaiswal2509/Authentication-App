@@ -30,8 +30,8 @@ app.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
 
-app.get("/", (req, res) => {
-  res.json({ messaage: "Hola amigo" });
+app.get("/health", (req, res) => {
+  res.json({ messaage: "Health Ok!!" });
 });
 
 app.use("/api/auth", authRoute);
